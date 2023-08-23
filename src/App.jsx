@@ -100,13 +100,18 @@ const App = () => {
       .create(personObject)
       .then(returnedPerson => {
         setPersons(persons.concat(returnedPerson))
-        setSuccessMessage(
-          `Added ${returnedPerson.name}`
-        )
+        setSuccessMessage(`Added ${returnedPerson.name}`)
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
       })
+      .catch(error => {
+        setErrorMessage(error.response.data.error)
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)
+      })
+      
     }
     setNewName('')
     setNewNumber('')
@@ -125,21 +130,18 @@ const App = () => {
       .then(returnedPerson => {
         setPersons(persons.map(person => 
           person.name.toLowerCase() !== newName.toLowerCase() ? person : returnedPerson))
-        setSuccessMessage(
-          `Number changed for ${returnedPerson.name}`
-        )
+        setSuccessMessage(`Number changed for ${returnedPerson.name}`)
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
       })
       .catch(error => {
-        setErrorMessage(
-          `Person '${personToUpdate.name}' was already removed from server`
-        )
-        setTimeout(() => {
-          setErrorMessage(null)
-        }, 5000)
-        setPersons(persons.filter(person => person.id !== id))
+          console.log(error)
+          setErrorMessage(error.response.data.error)
+          setTimeout(() => {
+            setErrorMessage(null)
+          }, 5000)
+          setPersons(persons.filter(person => person.id !== id))
       })  
   }
 
@@ -153,17 +155,13 @@ const App = () => {
       .deletePerson(id)
       .then(response => {
         console.log(`Deleted person with ID ${id}, name ${selected.name}`);
-        setSuccessMessage(
-          `Deleted ${selected.name}`
-        )
+        setSuccessMessage(`Deleted ${selected.name}`)
         setTimeout(() => {
           setSuccessMessage(null)
         }, 5000)
       })
       .catch(error => {
-        setErrorMessage(
-          `Person '${selected.name}' was already removed from server`
-        )
+        setErrorMessage(error.response.data.error)
         setTimeout(() => {
           setErrorMessage(null)
         }, 5000)
